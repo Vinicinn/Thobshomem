@@ -19,9 +19,20 @@ function LoginPage({ socket, setLoggedIn }) {
             onChange={(e) => setName(e.target.value)}
           />
           <button
-            onClick={() => {
-              socket.emit("join", name);
-              setLoggedIn(true);
+            onClick={async () => {
+              try {
+                const response = await socket
+                  .timeout(5000)
+                  .emitWithAck("join", name);
+                if (response.success) {
+                  setLoggedIn(true);
+                } else {
+                  document.getElementsByTagName("p")[0].innerText =
+                    response.message;
+                }
+              } catch (error) {
+                console.log(error);
+              }
             }}
           >
             Entrar

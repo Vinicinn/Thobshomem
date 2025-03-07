@@ -4,6 +4,7 @@ import io from "socket.io-client";
 
 // COMPONENTS
 import LoginPage from "./Components/LoginPage.js";
+import LobbyPage from "./Components/LobbyPage.js";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -17,7 +18,13 @@ function App() {
   }, []);
 
   return (
-    <div className="App">{loggedIn ? <h1>logged in</h1> : <LoginPage socket={socket} setLoggedIn={setLoggedIn} />}</div>
+    <div className="App">
+      {loggedIn ? (
+        <LobbyPage socket={socket} />
+      ) : (
+        <LoginPage socket={socket} setLoggedIn={setLoggedIn} />
+      )}
+    </div>
   );
 }
 
