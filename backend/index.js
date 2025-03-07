@@ -37,11 +37,13 @@ io.on("connection", (socket) => {
           callback({ success: false, message: "Nome/Apelido em uso!" });
         } else {
           players.push(new Player(socket.id, name));
+          socket.emit("players", players);
           callback({ success: true });
           console.log(name + " joined with id: " + socket.id);
         }
       } else {
         players.push(new Player(socket.id, name));
+        socket.emit("players", players);
         callback({ success: true });
         console.log(name + " joined with id: " + socket.id);
       }
