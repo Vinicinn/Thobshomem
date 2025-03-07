@@ -53,7 +53,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected");
+    if (players.length) {
+      console.log(
+        players.find((player) => player.id === socket.id).name + " disconnected"
+      );
+      players = players.filter((player) => player.id !== socket.id);
+      io.emit("players", players);
+    }
   });
 });
 
