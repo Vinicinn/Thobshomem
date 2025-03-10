@@ -1,0 +1,15 @@
+[
+    {
+      "name": "Aldeão",
+      "description": "Durante o dia participe das discussões com a aldeia para identificar o lobisomem e escolha alguém para eliminar.",
+      "actions": [],
+      "team": "aldeia"
+    },
+    {
+      "name": "Lobisomem",
+      "description": "Durante a noite junto com outros lobisomens, escolha uma vítima para eliminar. Durante o dia fique na sombra e se passe por um aldeão comum para evitar ser descoberto. Elimine todos os não lobisomens para vencer.",
+      "actions": [],
+      "team": "alcateia"
+    }
+  ]
+  

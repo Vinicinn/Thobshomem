@@ -2,6 +2,7 @@
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import fs from "fs";
 
 // SERVER CONFIG
 const app = express();
@@ -23,6 +24,7 @@ class Player {
 
 // GAME VARIABLES
 var players = [];
+const roles = JSON.parse(fs.readFileSync("roles.json"));
 
 // SOCKET EVENTS
 io.on("connection", (socket) => {
@@ -52,6 +54,10 @@ io.on("connection", (socket) => {
 
   socket.on("getPlayers", () => {
     socket.emit("players", players);
+  });
+
+  socket.on("getRoles", () => {
+    socket.emit("roles", roles);
   });
 
   socket.on("disconnect", () => {
