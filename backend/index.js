@@ -24,8 +24,27 @@ class Player {
 }
 
 // GAME VARIABLES
-var players = [];
-const roles = JSON.parse(fs.readFileSync("roles.json"));
+let players = [];
+let roles = [];
+
+// LOADING ROLES
+try {
+  roles = JSON.parse(fs.readFileSync("roles.json"));
+} catch (error) {
+  console.error("Erro ao ler roles.json", error);
+}
+
+// FUNCTIONS
+const addPlayer = (player) => players.push(player);
+const removePlayer = (id) => {
+  players = players.find((player) => player.id !== id);
+};
+const updatePlayerReady = (id, ready) => {
+  const player = players.find((player) => player.id === id);
+  if (player) {
+    player.ready = ready;
+  }
+};
 
 // SOCKET EVENTS
 io.on("connection", (socket) => {
@@ -33,24 +52,17 @@ io.on("connection", (socket) => {
 
   socket.on("join", (name, callback) => {
     if (!name) {
-      callback({ success: false, message: "Nome não pode ser vazio!" });
-    } else {
-      if (players.length) {
-        if (players.find((player) => player.name === name)) {
-          callback({ success: false, message: "Nome/Apelido em uso!" });
-        } else {
-          players.push(new Player(socket.id, name));
-          io.emit("players", players);
-          callback({ success: true });
-          console.log(name + " joined with id: " + socket.id);
-        }
-      } else {
-        players.push(new Player(socket.id, name));
-        io.emit("players", players);
-        callback({ success: true });
-        console.log(name + " joined with id: " + socket.id);
-      }
+      return callback({ success: false, message: "Nome não pode ser vazio!" });
     }
+    if (players.some((player) => player.name === name)) {
+      return callback({ success: false, message: "Nome/Apelido em uso!" });
+    }
+
+    const player = new Player(socket.id, name);
+    addPlayer(player);
+    io.emit("players", players);
+    callback({ success: true });
+    console.log(name + " joined with id: " + socket.id);
   });
 
   socket.on("getPlayers", () => {
@@ -62,7 +74,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("readyChange", (ready) => {
-    players.find((player) => player.id === socket.id).ready = ready;
+    updatePlayerReady(socket.id, ready);
     io.emit("players", players);
   });
 
@@ -71,7 +83,7 @@ io.on("connection", (socket) => {
       console.log(
         players.find((player) => player.id === socket.id).name + " disconnected"
       );
-      players = players.filter((player) => player.id !== socket.id);
+      removePlayer(socket.id);
       io.emit("players", players);
     }
   });
