@@ -29,7 +29,7 @@ let roles = [];
 
 // LOADING ROLES
 try {
-  roles = JSON.parse(fs.readFileSync("roles.json"));
+  roles = JSON.parse(fs.readFileSync("backend/roles.json"));
 } catch (error) {
   console.error("Erro ao ler roles.json", error);
 }
