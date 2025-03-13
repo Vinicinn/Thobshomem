@@ -19,6 +19,7 @@ class Player {
   constructor(id, name) {
     this.id = id;
     this.name = name;
+    this.ready = false;
   }
 }
 
@@ -58,6 +59,11 @@ io.on("connection", (socket) => {
 
   socket.on("getRoles", () => {
     socket.emit("roles", roles);
+  });
+
+  socket.on("readyChange", (ready) => {
+    players.find((player) => player.id === socket.id).ready = ready;
+    io.emit("players", players);
   });
 
   socket.on("disconnect", () => {
