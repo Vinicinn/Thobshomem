@@ -54,8 +54,11 @@ io.on("connection", (socket) => {
     if (!name) {
       return callback({ success: false, message: "Nome não pode ser vazio!" });
     }
-    if (players.some((player) => player.name === name)) {
-      return callback({ success: false, message: "Nome/Apelido em uso!" });
+    
+    if (players.length > 0) {
+      if (players.some((player) => player.name === name)) {
+        return callback({ success: false, message: "Nome/Apelido em uso!" });
+      }
     }
 
     const player = new Player(socket.id, name);
