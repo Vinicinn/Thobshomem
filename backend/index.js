@@ -43,6 +43,11 @@ const updatePlayerReady = (id, ready) => {
   const player = players.find((player) => player.id === id);
   if (player) {
     player.ready = ready;
+    if (player.ready) {
+      console.log(player.name + "is ready");
+    } else {
+      console.log(player.name + "is not ready");
+    }
   }
 };
 
@@ -54,7 +59,7 @@ io.on("connection", (socket) => {
     if (!name) {
       return callback({ success: false, message: "Nome não pode ser vazio!" });
     }
-    
+
     if (players.length > 0) {
       if (players.some((player) => player.name === name)) {
         return callback({ success: false, message: "Nome/Apelido em uso!" });
