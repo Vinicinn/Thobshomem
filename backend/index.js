@@ -37,7 +37,7 @@ try {
 // FUNCTIONS
 const addPlayer = (player) => players.push(player);
 const removePlayer = (id) => {
-  players = players.find((player) => player.id !== id);
+  players = players.filter((player) => player.id !== id);
 };
 const updatePlayerReady = (id, ready) => {
   const player = players.find((player) => player.id === id);
