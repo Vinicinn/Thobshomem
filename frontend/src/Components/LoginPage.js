@@ -122,8 +122,8 @@ function LoginPage({ socket, setLoggedIn }) {
             align-self: center;
           }
           .login-form {
-            flex-direction: column;
             justify-content: center;
+            flex-direction: column;
             align-items: center;
             display: flex;
             row-gap: 10px;
@@ -146,11 +146,11 @@ function LoginPage({ socket, setLoggedIn }) {
           }
           .modal {
             background-color: white;
+            text-align: center;
             max-height: 70%;
+            overflow: auto;
             padding: 20px;
             width: 80%;
-            overflow: auto;
-            text-align: center;
           }
           p, h2 {
           margin: 10px;

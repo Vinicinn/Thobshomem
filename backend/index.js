@@ -44,9 +44,9 @@ const updatePlayerReady = (id, ready) => {
   if (player) {
     player.ready = ready;
     if (player.ready) {
-      console.log(player.name + "is ready");
+      console.log(player.name + " is ready");
     } else {
-      console.log(player.name + "is not ready");
+      console.log(player.name + " is not ready");
     }
   }
 };
