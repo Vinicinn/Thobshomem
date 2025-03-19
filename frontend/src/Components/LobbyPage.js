@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 function LobbyPage({ socket }) {
   const [players, setPlayers] = useState([]);
   const [ready, setReady] = useState(false);
+  const [minPlayers, setMinPlayers] = useState(false);
+  const [allReady, setAllReady] = useState(false);
+  const [countDown, setCountDown] = useState(null);
 
   const handleChangeReady = () => {
     const newReady = !ready;
@@ -15,19 +18,45 @@ function LobbyPage({ socket }) {
 
     socket.on("players", (players) => {
       setPlayers(players);
+      if (players.length >= 2) {
+        setMinPlayers(true);
+      }
     });
+
+    socket.on("allReady", (value) => {
+      setAllReady(value);
+    });
+
+    if (allReady) {
+      let timeLeft = 5;
+      setCountDown(timeLeft);
+      const countDownInterval = setInterval(() => {
+        timeLeft -= 1;
+        setCountDown(timeLeft);
+        if (timeLeft === 0) {
+          clearInterval(countDownInterval);
+          socket.emit("startGame");
+        }
+      }, 1000);
+    }
 
     return () => {
       socket.off("players");
     };
-  }, [socket]);
+  }, [socket, allReady]);
 
   return (
     <>
       <div className="lobby-page">
         <div className="lobby-header">
           <h1>Lobby</h1>
-          <p>é preciso 4 ou mais jogadores</p>
+          <p>
+            {minPlayers
+              ? allReady
+                ? `começando em ${countDown} segundos...`
+                : "esperando todos ficarem prontos"
+              : "é preciso 4 ou mais jogadores"}
+          </p>
         </div>
         <div className="lobby-body">
           <h3>jogadores:</h3>

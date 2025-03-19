@@ -26,6 +26,7 @@ class Player {
 // GAME VARIABLES
 let players = [];
 let roles = [];
+let allReady = false;
 
 // LOADING ROLES
 try {
@@ -49,6 +50,9 @@ const updatePlayerReady = (id, ready) => {
       console.log(player.name + " is not ready");
     }
   }
+};
+const verifyAllReadyPlayers = () => {
+  return players.every((player) => player.ready);
 };
 
 // SOCKET EVENTS
@@ -84,6 +88,17 @@ io.on("connection", (socket) => {
   socket.on("readyChange", (ready) => {
     updatePlayerReady(socket.id, ready);
     io.emit("players", players);
+    if (verifyAllReadyPlayers()) {
+      console.log("all players ready");
+      allReady = true;
+      io.emit("allReady", true);
+    } else {
+      if (allReady == true) {
+        console.log("all players NOT ready");
+        allReady = false;
+        io.emit("allReady", false);
+      }
+    }
   });
 
   socket.on("disconnect", () => {
