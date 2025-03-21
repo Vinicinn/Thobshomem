@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./Login.css";
 
 function LoginPage({ socket, setLoggedIn }) {
   const [name, setName] = useState("");
@@ -101,62 +102,6 @@ function LoginPage({ socket, setLoggedIn }) {
           </div>
         </div>
       )}
-      <style>
-        {`
-          .login-page {
-            width: 100vw;
-            height: 90vh;
-          }
-          .login-header{
-            flex-direction: column;
-            align-items: center;
-            display: flex;
-            width: 100%;
-            height: 10%;
-          }
-          .info {
-            align-self: flex-start;
-            margin: 10px;
-          }
-          .title {
-            align-self: center;
-          }
-          .login-form {
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-            display: flex;
-            row-gap: 10px;
-            width: 100%;
-            height: 90%;
-          }
-          .login-error{
-            color: red;
-          }
-          .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            left: 0;
-            top: 0;
-          }
-          .modal {
-            background-color: white;
-            text-align: center;
-            max-height: 70%;
-            overflow: auto;
-            padding: 20px;
-            width: 80%;
-          }
-          p, h2 {
-          margin: 10px;
-          }
-        `}
-      </style>
     </>
   );
 }

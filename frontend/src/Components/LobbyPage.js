@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./Lobby.css";
 
 function LobbyPage({ socket }) {
   const [players, setPlayers] = useState([]);
@@ -75,34 +76,6 @@ function LobbyPage({ socket }) {
           </button>
         </div>
       </div>
-      <style>{`
-      .lobby-page{
-        width: 100vw;
-        height: 90vh;
-      }
-      .lobby-header {
-        margin: 10px;
-        text-align: center;
-        height: 10%;
-      }
-      .lobby-body {
-        height: 85%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .lobby-footer {
-        text-align: center;
-      }
-      ul {
-        padding-inline-start: 0px;
-        padding: 10px;
-        list-style-type: none;
-        width: 60vw;
-        text-align: center;
-      }
-      `}</style>
     </>
   );
 }
