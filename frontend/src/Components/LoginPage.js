@@ -13,6 +13,18 @@ function LoginPage({ socket, setLoggedIn }) {
     setLoading(true);
     socket.emit("getRoles");
   };
+  const handleLogin = async () => {
+    try {
+      const response = await socket.timeout(5000).emitWithAck("join", name);
+      if (response.success) {
+        setLoggedIn(true);
+      } else {
+        document.getElementsByTagName("p")[0].innerText = response.message;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (show) {
@@ -41,25 +53,7 @@ function LoginPage({ socket, setLoggedIn }) {
             placeholder="Digite seu nick/apelido"
             onChange={(e) => setName(e.target.value)}
           />
-          <button
-            onClick={async () => {
-              try {
-                const response = await socket
-                  .timeout(5000)
-                  .emitWithAck("join", name);
-                if (response.success) {
-                  setLoggedIn(true);
-                } else {
-                  document.getElementsByTagName("p")[0].innerText =
-                    response.message;
-                }
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          >
-            Entrar
-          </button>
+          <button onClick={handleLogin}>Entrar</button>
         </div>
       </div>
       {show && (
