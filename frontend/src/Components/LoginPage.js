@@ -52,6 +52,7 @@ function LoginPage({ socket, setLoggedIn }) {
             value={name}
             placeholder="Digite seu nick/apelido"
             onChange={(e) => setName(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
           />
           <button onClick={handleLogin}>Entrar</button>
         </div>

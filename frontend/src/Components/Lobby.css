@@ -1,4 +1,5 @@
 .lobby-page {
+  color: white;
   width: 100vw;
   height: 90vh;
 }
@@ -6,6 +7,9 @@
   margin: 10px;
   text-align: center;
   height: 10%;
+}
+.lobby-header p {
+  margin: 10px;
 }
 .lobby-body {
   height: 85%;
@@ -16,6 +20,12 @@
 }
 .lobby-footer {
   text-align: center;
+}
+.lobby-footer button{
+  width: 100px;
+  height: 25px;
+  color: rgb(45, 90, 136);
+  border-radius: 5px;
 }
 ul {
   padding-inline-start: 0px;
