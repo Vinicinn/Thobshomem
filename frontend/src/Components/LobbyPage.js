@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Lobby.css";
+import { useNavigate } from "react-router-dom";
 
-function LobbyPage({ socket }) {
+function LobbyPage({ socket, setInGame }) {
   const [players, setPlayers] = useState([]);
   const [ready, setReady] = useState(false);
   const [minPlayers, setMinPlayers] = useState(false);
   const [allReady, setAllReady] = useState(false);
   const [countDown, setCountDown] = useState(null);
+  const navigate = useNavigate();
 
   const handleChangeReady = () => {
     const newReady = !ready;
@@ -28,6 +30,10 @@ function LobbyPage({ socket }) {
       setAllReady(value);
     });
 
+    socket.on("gameId", (gameId) => {
+      navigate(`/game/${gameId}`);
+    });
+
     if (allReady) {
       let timeLeft = 5;
       setCountDown(timeLeft);
@@ -44,7 +50,7 @@ function LobbyPage({ socket }) {
     return () => {
       socket.off("players");
     };
-  }, [socket, allReady]);
+  }, [socket, allReady, navigate]);
 
   return (
     <>

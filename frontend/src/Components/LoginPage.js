@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function LoginPage({ socket, setLoggedIn }) {
@@ -6,6 +7,7 @@ function LoginPage({ socket, setLoggedIn }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
+  const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -18,6 +20,7 @@ function LoginPage({ socket, setLoggedIn }) {
       const response = await socket.timeout(5000).emitWithAck("join", name);
       if (response.success) {
         setLoggedIn(true);
+        navigate("/lobby");
       } else {
         document.getElementsByTagName("p")[0].innerText = response.message;
       }

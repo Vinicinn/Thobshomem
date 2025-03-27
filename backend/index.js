@@ -57,22 +57,31 @@ const verifyAllReadyPlayers = () => {
 
 // SOCKET EVENTS
 io.on("connection", (socket) => {
-  console.log("User connected");
+  socket.join("login");
+  console.log("User connected to login page");
 
   socket.on("join", (name, callback) => {
+    // VERIFY EMPTY NAME
     if (!name) {
       return callback({ success: false, message: "Nome não pode ser vazio!" });
     }
 
+    // VERIFY DUPLICATE NAME
     if (players.length > 0) {
       if (players.some((player) => player.name === name)) {
         return callback({ success: false, message: "Nome/Apelido em uso!" });
       }
     }
 
+    // CREATE PLAYER OBJECT
     const player = new Player(socket.id, name);
     addPlayer(player);
-    io.emit("players", players);
+    // SWITCH PLAYER ROOM
+    socket.leave("login");
+    socket.join("lobby");
+    // UPDATE PLAYERS IN THE LOBBY
+    io.to("lobby").emit("players", players);
+    // RETURN SUCCESS TO CLIENT
     callback({ success: true });
     console.log(name + " joined with id: " + socket.id);
   });
@@ -86,19 +95,32 @@ io.on("connection", (socket) => {
   });
 
   socket.on("readyChange", (ready) => {
+    // UPDATE PLAYER READY STATUS
     updatePlayerReady(socket.id, ready);
-    io.emit("players", players);
+    // UPDATE PLAYERS IN THE LOBBY
+    io.to("lobby").emit("players", players);
+    // VERIFY IF ALL PLAYERS ARE READY
     if (verifyAllReadyPlayers()) {
       console.log("all players ready");
       allReady = true;
-      io.emit("allReady", true);
+      io.to("lobby").emit("allReady", true);
     } else {
       if (allReady == true) {
         console.log("all players NOT ready");
         allReady = false;
-        io.emit("allReady", false);
+        io.to("lobby").emit("allReady", false);
       }
     }
+  });
+
+  socket.on("startGame", () => {
+    console.log("comecando o jogo");
+
+    const gameId = Math.floor(Math.random() * 9000);
+
+    io.to("lobby").emit("gameId", gameId);
+    socket.leave("lobby");
+    socket.join("game");
   });
 
   socket.on("disconnect", () => {

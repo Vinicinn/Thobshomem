@@ -1,10 +1,17 @@
 // IMPORTS
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 // COMPONENTS
 import LoginPage from "./Components/LoginPage.js";
 import LobbyPage from "./Components/LobbyPage.js";
+import GamePage from "./Components/GamePage.js";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -19,11 +26,24 @@ function App() {
 
   return (
     <div className="App">
-      {loggedIn ? (
-        <LobbyPage socket={socket} />
-      ) : (
-        <LoginPage socket={socket} setLoggedIn={setLoggedIn} />
-      )}
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={<LoginPage socket={socket} setLoggedIn={setLoggedIn} />}
+          />
+          <Route
+            path="/lobby"
+            element={
+              loggedIn ? <LobbyPage socket={socket} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/game/:gameId"
+            element={loggedIn ? <GamePage /> : <Navigate to="/" />}
+          />
+        </Routes>
+      </Router>
     </div>
   );
 }
