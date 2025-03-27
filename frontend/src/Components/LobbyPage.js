@@ -3,16 +3,16 @@ import "./Lobby.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function LobbyPage({ socket, loggedIn }) {
-  if (!loggedIn) {
-    return <Navigate to="/" />;
-  }
-
   const [players, setPlayers] = useState([]);
   const [ready, setReady] = useState(false);
   const [minPlayers, setMinPlayers] = useState(false);
   const [allReady, setAllReady] = useState(false);
   const [countDown, setCountDown] = useState(null);
   const navigate = useNavigate();
+
+  if (!loggedIn) {
+    return <Navigate to="/" />;
+  }
 
   const handleChangeReady = () => {
     const newReady = !ready;
