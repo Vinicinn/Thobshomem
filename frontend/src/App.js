@@ -1,12 +1,7 @@
 // IMPORTS
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import {
-  HashRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
 // COMPONENTS
 import LoginPage from "./Components/LoginPage.js";

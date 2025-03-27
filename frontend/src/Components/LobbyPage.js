@@ -10,10 +10,6 @@ function LobbyPage({ socket, loggedIn }) {
   const [countDown, setCountDown] = useState(null);
   const navigate = useNavigate();
 
-  if (!loggedIn) {
-    return <Navigate to="/" />;
-  }
-
   const handleChangeReady = () => {
     const newReady = !ready;
     setReady(newReady);
@@ -55,6 +51,10 @@ function LobbyPage({ socket, loggedIn }) {
       socket.off("players");
     };
   }, [socket, allReady, navigate]);
+
+  if (!loggedIn) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
