@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -34,13 +34,11 @@ function App() {
           />
           <Route
             path="/lobby"
-            element={
-              loggedIn ? <LobbyPage socket={socket} /> : <Navigate to="/" />
-            }
+            element={<LobbyPage socket={socket} loggedIn={loggedIn} />}
           />
           <Route
             path="/game/:gameId"
-            element={loggedIn ? <GamePage /> : <Navigate to="/" />}
+            element={<GamePage socket={socket} loggedIn={loggedIn} />}
           />
         </Routes>
       </Router>

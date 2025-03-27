@@ -125,11 +125,15 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     if (players.length) {
-      console.log(
-        players.find((player) => player.id === socket.id).name + " disconnected"
-      );
-      removePlayer(socket.id);
-      io.emit("players", players);
+      const player = players.find((player) => player.id === socket.id);
+
+      if (player) {
+        console.log(player.name + " disconnected");
+        removePlayer(socket.id);
+        io.emit("players", players); 
+      } else {
+        console.log("Player with ID " + socket.id + " not found.");
+      }
     }
   });
 });

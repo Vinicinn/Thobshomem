@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Lobby.css";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
-function LobbyPage({ socket, setInGame }) {
+function LobbyPage({ socket, loggedIn }) {
+  if (!loggedIn) {
+    return <Navigate to="/" />;
+  }
+
   const [players, setPlayers] = useState([]);
   const [ready, setReady] = useState(false);
   const [minPlayers, setMinPlayers] = useState(false);
