@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Lobby.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -7,50 +7,67 @@ function LobbyPage({ socket, loggedIn }) {
   const [ready, setReady] = useState(false);
   const [minPlayers, setMinPlayers] = useState(false);
   const [allReady, setAllReady] = useState(false);
-  const [countDown, setCountDown] = useState(null);
+  const [countDown, setCountDown] = useState(5);
+  let intervalRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChangeReady = () => {
     const newReady = !ready;
     setReady(newReady);
     socket.emit("readyChange", newReady);
+
+    if (!newReady) {
+      clearInterval(intervalRef);
+      setCountDown(5);
+    }
   };
 
+  // SOCKET EFFECTS
   useEffect(() => {
-    socket.emit("getPlayers");
+    if (socket) {
+      socket.emit("getPlayers");
 
-    socket.on("players", (players) => {
-      setPlayers(players);
-      if (players.length >= 2) {
-        setMinPlayers(true);
-      }
-    });
+      socket.on("players", (players) => {
+        setPlayers(players);
+        setMinPlayers(players.length >= 2);
+      });
 
-    socket.on("allReady", (value) => {
-      setAllReady(value);
-    });
+      socket.on("allReady", (value) => {
+        setAllReady(value);
+      });
 
-    socket.on("gameId", (gameId) => {
-      navigate(`/game/${gameId}`);
-    });
+      socket.on("gameId", (gameId) => {
+        navigate(`/game/${gameId}`);
+      });
 
-    if (allReady) {
-      let timeLeft = 5;
-      setCountDown(timeLeft);
-      const countDownInterval = setInterval(() => {
-        timeLeft -= 1;
-        setCountDown(timeLeft);
-        if (timeLeft === 0) {
-          clearInterval(countDownInterval);
-          socket.emit("startGame");
-        }
+      return () => {
+        socket.off("players");
+        socket.off("allReady");
+        socket.off("gameId");
+      };
+    }
+  }, [socket, navigate, allReady]);
+
+  // COUNTDOWN EFFECTS
+  useEffect(() => {
+    if (allReady && minPlayers) {
+      intervalRef.current = setInterval(() => {
+        setCountDown((prevCountDown) => {
+          if (prevCountDown === 0) {
+            socket.emit("startGame");
+          }
+          return prevCountDown > 0 ? prevCountDown - 1 : 0;
+        });
       }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
     }
 
-    return () => {
-      socket.off("players");
-    };
-  }, [socket, allReady, navigate]);
+    if (!allReady || !minPlayers) {
+      setCountDown(5);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [allReady, minPlayers, socket]);
 
   if (!loggedIn) {
     return <Navigate to="/" />;
@@ -75,7 +92,7 @@ function LobbyPage({ socket, loggedIn }) {
             {players.map((player) => (
               <li key={player.id}>
                 {player.name}
-                {player.ready ? " (pronto)" : " (nao pronto)"}
+                {player.ready ? "✔️" : "❌"}
               </li>
             ))}
           </ul>

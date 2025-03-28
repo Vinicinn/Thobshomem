@@ -9,11 +9,15 @@ import LobbyPage from "./Components/LobbyPage.js";
 import GamePage from "./Components/GamePage.js";
 
 function App() {
+  // STATES
   const [socket, setSocket] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  // SOCKET CONNECTION
   useEffect(() => {
-    const newSocket = io("https://thobshomem.onrender.com");
+    const newSocket = io("https://thobshomem.onrender.com", {
+      reconnectionAttempts: 5,
+    });
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -21,7 +25,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router basename="/Thobshomem">
+      <Router>
         <Routes>
           <Route
             path="/"

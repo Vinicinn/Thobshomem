@@ -6,7 +6,7 @@ function GamePage({ socket, loggedIn }) {
   }
   return (
     <>
-      <p>pagina game</p>
+      <p style={{color:"white"}}>pagina game</p>
     </>
   );
 }

@@ -55,6 +55,18 @@ const verifyAllReadyPlayers = () => {
   return players.every((player) => player.ready);
 };
 
+const emitLobbyPlayers = () => {
+  io.to("lobby").emit("players", players);
+};
+const emitAllReady = () => {
+  console.log("all players ready");
+  io.to("lobby").emit("allReady", true);
+};
+const emitAllNotReady = () => {
+  console.log("all players NOT ready");
+  io.to("lobby").emit("allReady", false);
+};
+
 // SOCKET EVENTS
 io.on("connection", (socket) => {
   socket.join("login");
@@ -80,7 +92,8 @@ io.on("connection", (socket) => {
     socket.leave("login");
     socket.join("lobby");
     // UPDATE PLAYERS IN THE LOBBY
-    io.to("lobby").emit("players", players);
+    emitLobbyPlayers();
+    emitAllNotReady();
     // RETURN SUCCESS TO CLIENT
     callback({ success: true });
     console.log(name + " joined with id: " + socket.id);
@@ -98,17 +111,15 @@ io.on("connection", (socket) => {
     // UPDATE PLAYER READY STATUS
     updatePlayerReady(socket.id, ready);
     // UPDATE PLAYERS IN THE LOBBY
-    io.to("lobby").emit("players", players);
+    emitLobbyPlayers();
     // VERIFY IF ALL PLAYERS ARE READY
     if (verifyAllReadyPlayers()) {
-      console.log("all players ready");
       allReady = true;
-      io.to("lobby").emit("allReady", true);
+      emitAllReady();
     } else {
       if (allReady == true) {
-        console.log("all players NOT ready");
         allReady = false;
-        io.to("lobby").emit("allReady", false);
+        emitAllNotReady();
       }
     }
   });
@@ -130,7 +141,7 @@ io.on("connection", (socket) => {
       if (player) {
         console.log(player.name + " disconnected");
         removePlayer(socket.id);
-        io.emit("players", players); 
+        io.emit("players", players);
       } else {
         console.log("Player with ID " + socket.id + " not found.");
       }

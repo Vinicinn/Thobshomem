@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function LoginPage({ socket, setLoggedIn }) {
+  // STATES
   const [name, setName] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const navigate = useNavigate();
 
+  // FUNCTIONS
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
@@ -29,12 +31,15 @@ function LoginPage({ socket, setLoggedIn }) {
     }
   };
 
+  // MODAL ROLES
   useEffect(() => {
     if (show) {
       socket.on("roles", (roles) => {
         setRoles(roles);
         setLoading(false);
       });
+
+      return () => socket.off("roles");
     }
   }, [socket, show]);
 
@@ -62,7 +67,7 @@ function LoginPage({ socket, setLoggedIn }) {
       </div>
       {show && (
         <div className="modal-overlay" onClick={handleClose}>
-          <div className="modal">
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h2>Informações</h2>
             <hr style={{ borderBottom: "1px solid black" }}></hr>
             <p>
